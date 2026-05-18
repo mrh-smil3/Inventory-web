@@ -57,8 +57,10 @@ class SupplierResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('phone')
+                    ->icon('heroicon-o-phone')
                     ->searchable(),
                 TextColumn::make('address')
+                    ->icon('heroicon-o-map-pin')
                     ->searchable()
                     ->limit(50),
             ])
