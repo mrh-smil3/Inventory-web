@@ -23,11 +23,11 @@ class SupplierResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Truck;
 
-    // protected static string | UnitEnum | null $navigationGroup = 'Master Data';
+    protected static string | UnitEnum | null $navigationGroup = ' ';
 
     protected static ?string $recordTitleAttribute = 'Supplier';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $navigationLabel = 'Supplier';
 

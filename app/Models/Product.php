@@ -12,9 +12,8 @@ class Product extends Model
         'purchase_price',
         'selling_price',
         'stock',
-        'unit',
+        'unit_id',
         'category_id',
-        'supplier_id',
         'slug',
     ];
 
@@ -23,10 +22,10 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }   
+    // public function supplier()
+    // {
+    //     return $this->belongsTo(Supplier::class);
+    // }   
 
     public function stockIns()
     {
@@ -41,5 +40,9 @@ class Product extends Model
     public function stockMutations()
     {
         return $this->hasMany(StockMutation::class);
-    }       
+    }      
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }   
 }

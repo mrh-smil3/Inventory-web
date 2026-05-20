@@ -19,9 +19,9 @@ return new class extends Migration
             $table->decimal('purchase_price', 10, 2);
             $table->decimal('selling_price', 10, 2);
             $table->integer('stock');
-            $table->string('unit');
+            $table->foreignId('unit_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
+            // $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

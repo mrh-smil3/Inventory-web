@@ -30,8 +30,6 @@ class CategoryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Category';
 
-    // protected static ?string $navigationGroup = 'Master Data';
-
     protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationLabel = 'Kategori';
