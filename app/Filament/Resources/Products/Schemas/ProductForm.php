@@ -24,7 +24,7 @@ class ProductForm
                 Section::make()
             ->schema([
                 TextInput::make('name')
-                    ->label('Name')
+                    ->label('Nama Produk')
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
@@ -40,7 +40,7 @@ class ProductForm
                     ->dehydrated()
                     ->required(),
                 Select::make('category_id')
-                    ->label('Category')
+                    ->label('Kategori')
                     ->relationship('category', 'name')
                     ->required(),
                 TextInput::make('sku')
@@ -71,7 +71,7 @@ class ProductForm
                     }),
 
                 TextInput::make('stock')
-                    ->label('Stock')
+                    ->label('Stok Awal')
                     ->numeric()
                     ->required(),
 
