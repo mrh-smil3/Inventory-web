@@ -10,7 +10,8 @@ class StockOut extends Model
         'product_id',
         'quantity',
         'transaction_date',
-        'note'
+        'note',
+        'invoice_number',
     ];
 
     public function product()

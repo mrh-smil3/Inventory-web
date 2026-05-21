@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
+            $table->string('invoice_number')->unique();
             $table->integer('quantity');
             $table->date('transaction_date');
             $table->text('note')->nullable();

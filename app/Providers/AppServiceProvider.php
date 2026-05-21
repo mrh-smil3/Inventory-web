@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\StockIn;
+use App\Models\StockOut;
+use App\Observers\StockObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        StockIn::observe(StockObserver::class);
+        StockOut::observe(StockObserver::class);
     }
 }
