@@ -23,6 +23,8 @@ class ProductResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Master Data';
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $recordTitleAttribute = 'Produk';
 
     public static function form(Schema $schema): Schema
