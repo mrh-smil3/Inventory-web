@@ -17,7 +17,7 @@ class UsersTable
             ->columns([
                 TextColumn::make("name")->sortable(),
                 TextColumn::make("email")->sortable(),
-                TextColumn::make("role.name")->sortable(),
+                TextColumn::make("roles.name")->sortable(),
                 TextColumn::make("created_at")->sortable(),
                 TextColumn::make("updated_at")->sortable(),
             ])
