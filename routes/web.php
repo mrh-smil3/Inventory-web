@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
+use App\Models\StockOut;
 
 Route::get('/', function () {
     return redirect('/admin');
@@ -31,3 +32,12 @@ Route::get('/admin/stock-reports/print', function () {
     
     return view('print-stock-report', compact('products'));
 })->name('admin.stock-reports.print')->middleware(['web', 'auth']);
+
+Route::get('/admin/stock-outs/{stockOut}/print', function (StockOut $stockOut) {
+    $stockOut->load([
+        'items.product.unit',
+        'items.product.category',
+    ]);
+
+    return view('print-stock-out', compact('stockOut'));
+})->name('admin.stock-outs.print')->middleware(['web', 'auth']);

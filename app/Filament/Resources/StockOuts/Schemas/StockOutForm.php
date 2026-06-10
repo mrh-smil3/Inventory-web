@@ -5,6 +5,7 @@ namespace App\Filament\Resources\StockOuts\Schemas;
 use App\Models\Product;
 use App\Models\StockOut;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -44,77 +45,110 @@ class StockOutForm
                                 return $prefix.$nextSeq;
                             }),
 
-                        Select::make('product_id')
-                            ->label('Nama Barang')
-                            ->relationship('product', 'name')
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function (Get $get) {
-                                $productId = $get('product_id');
-                                if ($productId) {
-                                    $product = Product::find($productId);
-                                    if ($product && $product->stock <= 0) {
-                                        Notification::make()
-                                            ->title('Peringatan: Stok Habis')
-                                            ->body("Stok untuk produk {$product->name} saat ini kosong.")
-                                            ->warning()
-                                            ->send();
-                                    }
-                                }
-                            }),
-                        TextInput::make('quantity')
-                            ->label('Jumlah Keluar')
-                            ->numeric()
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function (Get $get, Set $set, $state, $record) {
-                                $productId = $get('product_id');
-                                if (! $productId || ! $state) {
-                                    return;
-                                }
-                                $product = Product::find($productId);
-                                if (! $product) {
-                                    return;
-                                }
-                                $availableStock = $product->stock;
-                                if ($record && $record->exists && $record->product_id == $productId) {
-                                    $availableStock += $record->quantity;
-                                }
-                                if ($state > $availableStock) {
-                                    Notification::make()
-                                        ->title('Stok Tidak Mencukupi')
-                                        ->body("Stok tersedia untuk {$product->name}: {$availableStock}. Jumlah keluar yang diminta: {$state}.")
-                                        ->danger()
-                                        ->send();
-
-                                    $set('quantity', $availableStock);
-                                }
-                            })
-                            ->rules([
-                                fn (Get $get, $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
-                                    $productId = $get('product_id');
-                                    if (! $productId) {
-                                        return;
-                                    }
-                                    $product = Product::find($productId);
-                                    if (! $product) {
-                                        return;
-                                    }
-                                    $availableStock = $product->stock;
-                                    if ($record && $record->exists && $record->product_id == $productId) {
-                                        $availableStock += $record->quantity;
-                                    }
-                                    if ($value > $availableStock) {
-                                        $fail("Jumlah keluar ({$value}) melebihi stok yang tersedia ({$availableStock}).");
-                                    }
-                                },
-                            ]),
                         DatePicker::make('transaction_date')
                             ->label('Tanggal Transaksi')
                             ->date()
                             ->required(),
+                        TextInput::make('customer_name')
+                            ->label('Pelanggan')
+                            ->required(),
                         Textarea::make('note')
                             ->label('Catatan'),
+
+                        Repeater::make('items')
+                            ->label('Daftar Barang')
+                            ->relationship()
+                            ->schema([
+                                Select::make('product_id')
+                                    ->label('Nama Barang')
+                                    ->relationship('product', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->live()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->afterStateUpdated(function (Get $get) {
+                                        $productId = $get('product_id');
+
+                                        if (! $productId) {
+                                            return;
+                                        }
+
+                                        $product = Product::find($productId);
+
+                                        if ($product && $product->stock <= 0) {
+                                            Notification::make()
+                                                ->title('Peringatan: Stok Habis')
+                                                ->body("Stok untuk produk {$product->name} saat ini kosong.")
+                                                ->warning()
+                                                ->send();
+                                        }
+                                    }),
+                                TextInput::make('quantity')
+                                    ->label('Jumlah Keluar')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state, $record) {
+                                        $productId = $get('product_id');
+
+                                        if (! $productId || ! $state) {
+                                            return;
+                                        }
+
+                                        $product = Product::find($productId);
+
+                                        if (! $product) {
+                                            return;
+                                        }
+
+                                        $availableStock = $product->stock;
+
+                                        if ($record && $record->exists && $record->product_id == $productId) {
+                                            $availableStock += $record->quantity;
+                                        }
+
+                                        if ($state > $availableStock) {
+                                            Notification::make()
+                                                ->title('Stok Tidak Mencukupi')
+                                                ->body("Stok tersedia untuk {$product->name}: {$availableStock}. Jumlah keluar yang diminta: {$state}.")
+                                                ->danger()
+                                                ->send();
+
+                                            $set('quantity', $availableStock);
+                                        }
+                                    })
+                                    ->rules([
+                                        fn (Get $get, $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                                            $productId = $get('product_id');
+
+                                            if (! $productId) {
+                                                return;
+                                            }
+
+                                            $product = Product::find($productId);
+
+                                            if (! $product) {
+                                                return;
+                                            }
+
+                                            $availableStock = $product->stock;
+
+                                            if ($record && $record->exists && $record->product_id == $productId) {
+                                                $availableStock += $record->quantity;
+                                            }
+
+                                            if ($value > $availableStock) {
+                                                $fail("Jumlah keluar ({$value}) melebihi stok yang tersedia ({$availableStock}).");
+                                            }
+                                        },
+                                    ]),
+                            ])
+                            ->columns(2)
+                            ->minItems(1)
+                            ->addActionLabel('Tambah Barang')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),

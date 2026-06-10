@@ -23,18 +23,8 @@ class ProductForm
                             ->label('Nama Produk')
                             ->required()
                             ->maxLength(255)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
-                                if (($get('slug') ?? '') !== Str::slug($old)) {
-                                    return;
-                                }
-
-                                $set('slug', Str::slug($state));
-                            }),
-                        TextInput::make('slug')
-                            ->disabled()
-                            ->dehydrated()
-                            ->required(),
+                            ->columnSpanFull(),
+                        
                         Select::make('category_id')
                             ->label('Kategori')
                             ->relationship('category', 'name')
@@ -70,17 +60,17 @@ class ProductForm
                         TextInput::make('stock')
                             ->label('Stok Awal')
                             ->numeric()
-                            ->required(),
+                            ->default(0),
 
                         Select::make('unit_id')
-                            ->label('Unit')
+                            ->label('Satuan')
                             ->required()
                             ->relationship('unit', 'name')
                             ->searchable()
                             ->preload()
                             ->createOptionForm([
                                 TextInput::make('name')
-                                    ->label('Unit')
+                                    ->label('Satuan')
                                     ->required()
                                     ->maxLength(50),
                             ]),

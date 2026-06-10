@@ -43,7 +43,7 @@ class StockReportResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->withSum('stockIns as total_stock_in', 'quantity')
-            ->withSum('stockOuts as total_stock_out', 'quantity');
+            ->withSum('stockInItems as total_stock_in', 'quantity')
+            ->withSum('stockOutItems as total_stock_out', 'quantity');
     }
 }

@@ -14,7 +14,7 @@ class Product extends Model
         'stock',
         'unit_id',
         'category_id',
-        'slug',
+        
     ];
 
     public function category()
@@ -30,12 +30,22 @@ class Product extends Model
     public function stockIns()
     {
         return $this->hasMany(StockIn::class);
-    }   
+    }
+
+    public function stockInItems()
+    {
+        return $this->hasMany(StockInItem::class);
+    }
 
     public function stockOuts()
     {
         return $this->hasMany(StockOut::class);
-    }   
+    }
+
+    public function stockOutItems()
+    {
+        return $this->hasMany(StockOutItem::class);
+    }
 
     public function stockMutations()
     {

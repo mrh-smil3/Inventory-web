@@ -19,17 +19,27 @@ class StockInsTable
                     ->label('No. Invoice')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('product.name')
+                TextColumn::make('items.product.name')
                     ->label('Nama Produk')
-                    ->searchable()
-                    ->sortable(),
+                    ->listWithLineBreaks()
+                    ->limitList(3)
+                    ->expandableLimitedList()
+                    ->searchable(),
+                TextColumn::make('items.product.unit.name')
+                    ->label('Satuan')
+                    ->listWithLineBreaks()
+                    ->limitList(3)
+                    ->expandableLimitedList()
+                    ->searchable(),
+                TextColumn::make('items.quantity')
+                    ->label('Jumlah Masuk')
+                    ->listWithLineBreaks()
+                    ->limitList(3)
+                    ->expandableLimitedList()
+                    ->searchable(),
                 TextColumn::make('supplier.name')
                     ->label('Supplier')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('quantity')
-                    ->label('Jumlah')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('transaction_date')
                     ->label('Tanggal Transaksi')

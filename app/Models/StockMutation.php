@@ -12,6 +12,8 @@ class StockMutation extends Model
         'quantity',
         'transaction_date',
         'reference_id',
+        'stock_in_item_id',
+        'stock_out_item_id',
         'note'
     ];
 
@@ -20,13 +22,13 @@ class StockMutation extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function stockIn()
+    public function stockInItem()
     {
-        return $this->belongsTo(StockIn::class);
-    }   
+        return $this->belongsTo(StockInItem::class);
+    }
 
-    public function stockOut()
+    public function stockOutItem()
     {
-        return $this->belongsTo(StockOut::class);
+        return $this->belongsTo(StockOutItem::class);
     }
 }

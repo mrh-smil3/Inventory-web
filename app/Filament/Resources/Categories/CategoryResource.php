@@ -42,18 +42,10 @@ class CategoryResource extends Resource
             ->components([
                 TextInput::make('name')
                     ->required()
+                    ->maxLength(255),
+                TextInput::make('description')
                     ->maxLength(255)
-                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
-                        if (($get('slug') ?? '') !== Str::slug($old)) {
-                            return;
-                        }
-                    
-                        $set('slug', Str::slug($state));
-                    }),
-                TextInput::make('slug')
-                    ->disabled()
-                    ->dehydrated()
-                    ->required(),
+                    ->columnSpanFull(),
                 TextInput::make('description')
                     ->maxLength(255)
                     ->columnSpanFull(),
@@ -67,9 +59,6 @@ class CategoryResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable()
-                    ->badge(),
                 TextColumn::make('description')
                     ->searchable(),
             ])

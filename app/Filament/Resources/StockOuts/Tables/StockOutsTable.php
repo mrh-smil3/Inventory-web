@@ -19,14 +19,22 @@ class StockOutsTable
                     ->label('No. Invoice')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('product.name')
-                    ->label('Nama Barang')
+                TextColumn::make('customer_name')
+                    ->label('Pelanggan')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('quantity')
-                    ->label('Jumlah Keluar')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('items.product.name')
+                    ->label('Nama Barang')
+                    ->listWithLineBreaks()
+                    ->limitList(3)
+                    ->expandableLimitedList()
+                    ->searchable(),
+                TextColumn::make('items.quantity')
+                    ->label('Total Jumlah Keluar')
+                    ->listWithLineBreaks()
+                    ->limitList(3)
+                    ->expandableLimitedList()
+                    ->searchable(),
                 TextColumn::make('transaction_date')
                     ->label('Tanggal Transaksi')
                     ->date()
