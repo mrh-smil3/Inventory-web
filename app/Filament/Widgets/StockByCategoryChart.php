@@ -5,9 +5,11 @@ namespace App\Filament\Widgets;
 use App\Models\Product;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class StockByCategoryChart extends ChartWidget
 {
+    use HasWidgetShield;
     protected static ?int $sort = 4;
 
     protected ?string $heading = 'Stok per Kategori';

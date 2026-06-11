@@ -11,9 +11,11 @@ use App\Filament\Widgets\TopOutboundProductsChart;
 use App\Filament\Widgets\TransactionStats;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Widgets\AccountWidget;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 class Dashboard extends BaseDashboard
 {
+    use HasPageShield;
     protected static ?string $title = 'Dashboard Inventori';
 
     protected static ?string $navigationLabel = 'Dashboard';

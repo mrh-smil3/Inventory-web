@@ -25,6 +25,7 @@ class StockInForm
                     ->schema([
                         TextInput::make('invoice_number')
                             ->label('No. Invoice')
+                            ->unique(ignoreRecord: true)
                             ->required(),
                             // ->readOnly()
                             // ->default(function () {
