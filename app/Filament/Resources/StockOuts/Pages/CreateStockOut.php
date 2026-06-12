@@ -9,6 +9,8 @@ class CreateStockOut extends CreateRecord
 {
     protected static string $resource = StockOutResource::class;
 
+    protected static ?string $title = 'Tambah Barang Keluar';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $items = collect($data['items'] ?? []);

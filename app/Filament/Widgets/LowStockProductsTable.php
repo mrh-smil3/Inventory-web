@@ -10,9 +10,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class LowStockProductsTable extends TableWidget
 {
+    use HasWidgetShield;
     protected static ?int $sort = 6;
 
     protected int|string|array $columnSpan = 'full';

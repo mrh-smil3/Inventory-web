@@ -32,11 +32,11 @@ class ProductsTable
                     ->money('IDR')
                     ->sortable(),
                 TextColumn::make('stock')
-                    ->label('Stock')
+                    ->label('Stok')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('unit.name')
-                    ->label('Unit')
+                    ->label('Satuan')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('category.name')

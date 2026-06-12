@@ -6,9 +6,11 @@ use App\Filament\Support\InventoryDashboard;
 use App\Models\StockMutation;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class StockMovementChart extends ChartWidget
 {
+    use HasWidgetShield;
     protected static ?int $sort = 3;
 
     protected ?string $heading = 'Pergerakan Stok (30 Hari Terakhir)';

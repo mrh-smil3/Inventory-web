@@ -6,9 +6,11 @@ use App\Filament\Support\InventoryDashboard;
 use App\Models\StockMutation;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class TopOutboundProductsChart extends ChartWidget
 {
+    use HasWidgetShield;
     protected static ?int $sort = 5;
 
     protected ?string $heading = 'Produk Terlaris Keluar';

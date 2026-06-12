@@ -34,7 +34,8 @@ class ProductForm
                             ->label('SKU')
                             ->helperText('Kode Unik Produk (Singkatan)')
                             ->required()
-                            ->maxLength(50),
+                            ->maxLength(50)
+                            ->unique(ignoreRecord: true),
                         TextInput::make('purchase_price')
                             ->label('Harga Beli')
                             ->numeric()

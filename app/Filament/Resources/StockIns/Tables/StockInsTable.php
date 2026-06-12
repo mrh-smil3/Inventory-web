@@ -25,14 +25,14 @@ class StockInsTable
                     ->limitList(3)
                     ->expandableLimitedList()
                     ->searchable(),
-                TextColumn::make('items.product.unit.name')
-                    ->label('Satuan')
+                TextColumn::make('items.quantity')
+                    ->label('Jumlah Masuk')
                     ->listWithLineBreaks()
                     ->limitList(3)
                     ->expandableLimitedList()
                     ->searchable(),
-                TextColumn::make('items.quantity')
-                    ->label('Jumlah Masuk')
+                TextColumn::make('items.product.unit.name')
+                    ->label('Satuan')
                     ->listWithLineBreaks()
                     ->limitList(3)
                     ->expandableLimitedList()

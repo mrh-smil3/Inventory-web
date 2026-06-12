@@ -10,10 +10,13 @@ class ListStockOuts extends ListRecords
 {
     protected static string $resource = StockOutResource::class;
 
+    protected static ?string $title = 'Barang Keluar';
+
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+            ->label('Tambah Barang Keluar'),
         ];
     }
 }

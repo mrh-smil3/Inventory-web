@@ -12,9 +12,11 @@ use App\Models\Supplier;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class TransactionStats extends StatsOverviewWidget
 {
+    use HasWidgetShield;
     protected static ?int $sort = 2;
 
     protected ?string $heading = 'Aktivitas Transaksi';
