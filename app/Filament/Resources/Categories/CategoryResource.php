@@ -46,9 +46,6 @@ class CategoryResource extends Resource
                 TextInput::make('description')
                     ->maxLength(255)
                     ->columnSpanFull(),
-                TextInput::make('description')
-                    ->maxLength(255)
-                    ->columnSpanFull(),
             ]);
     }
 
