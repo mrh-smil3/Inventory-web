@@ -49,9 +49,9 @@ class StockOutForm
                             ->label('Tanggal Transaksi')
                             ->date()
                             ->required(),
-                        TextInput::make('customer_name')
-                            ->label('Pelanggan')
-                            ->required(),
+                        // TextInput::make('customer_name')
+                        //     ->label('Pelanggan')
+                        //     ->required(),
                         Textarea::make('note')
                             ->label('Catatan'),
 

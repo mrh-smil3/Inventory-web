@@ -17,8 +17,8 @@ class StockOutInfolist
                     ->schema([
                         TextEntry::make('invoice_number')
                             ->label('No. Invoice'),
-                        TextEntry::make('customer_name')
-                            ->label('Pelanggan'),
+                        // TextEntry::make('customer_name')
+                        //     ->label('Pelanggan'),
                         TextEntry::make('transaction_date')
                             ->label('Tanggal Transaksi'),
                         TextEntry::make('note')
