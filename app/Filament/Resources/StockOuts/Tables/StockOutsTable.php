@@ -19,10 +19,10 @@ class StockOutsTable
                     ->label('No. Invoice')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('customer_name')
-                    ->label('Pelanggan')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('customer_name')
+                //     ->label('Pelanggan')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('items.product.name')
                     ->label('Nama Barang')
                     ->listWithLineBreaks()
