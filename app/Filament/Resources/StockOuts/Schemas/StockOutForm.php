@@ -4,6 +4,7 @@ namespace App\Filament\Resources\StockOuts\Schemas;
 
 use App\Models\Product;
 use App\Models\StockOut;
+use Closure;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -12,7 +13,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class StockOutForm
@@ -90,7 +90,7 @@ class StockOutForm
                                     ->minValue(1)
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(function (Get $get, Set $set, $state, $record) {
+                                    ->afterStateUpdated(function (Get $get, $state, $record) {
                                         $productId = $get('product_id');
 
                                         if (! $productId || ! $state) {
@@ -115,12 +115,10 @@ class StockOutForm
                                                 ->body("Stok tersedia untuk {$product->name}: {$availableStock}. Jumlah keluar yang diminta: {$state}.")
                                                 ->danger()
                                                 ->send();
-
-                                            $set('quantity', $availableStock);
                                         }
                                     })
                                     ->rules([
-                                        fn (Get $get, $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                                        fn (Get $get, $record): Closure => function (string $attribute, $value, Closure $fail) use ($get, $record): void {
                                             $productId = $get('product_id');
 
                                             if (! $productId) {

@@ -9,6 +9,7 @@ class CreateStockIn extends CreateRecord
 {
     protected static string $resource = StockInResource::class;
     protected static ?string $title = 'Tambah Barang Masuk';
+    protected static bool $canCreateAnother = false;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

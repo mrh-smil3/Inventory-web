@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class ProductForm
 {
@@ -40,23 +39,37 @@ class ProductForm
                             ->label('Harga Beli')
                             ->numeric()
                             ->prefix('Rp')
-                            ->required(),
+                            ->required()
+                            ->live(onBlur: true)
+                            ->rules([
+                                fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get): void {
+                                    if (is_numeric($value) && is_numeric($get('selling_price')) && (float) $value > (float) $get('selling_price')) {
+                                        $fail('Harga Beli tidak boleh lebih besar dari Harga Jual');
+                                    }
+                                },
+                            ]),
 
                         TextInput::make('selling_price')
                             ->label('Harga Jual')
                             ->numeric()
                             ->prefix('Rp')
                             ->required()
-                            ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
-                                if (($get('selling_price') < $get('purchase_price'))) {
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Get $get, ?string $state): void {
+                                if (is_numeric($state) && is_numeric($get('purchase_price')) && (float) $state < (float) $get('purchase_price')) {
                                     Notification::make()
                                         ->title('Harga Jual harus lebih besar dari Harga Beli')
                                         ->danger()
                                         ->send();
-                                    $set('selling_price', $get('purchase_price'));
                                 }
-
-                            }),
+                            })
+                            ->rules([
+                                fn (Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get): void {
+                                    if (is_numeric($value) && is_numeric($get('purchase_price')) && (float) $value < (float) $get('purchase_price')) {
+                                        $fail('Harga Jual harus lebih besar atau sama dengan Harga Beli');
+                                    }
+                                },
+                            ]),
 
                         TextInput::make('stock')
                             ->label('Stok Awal')

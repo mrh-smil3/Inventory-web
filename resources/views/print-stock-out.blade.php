@@ -178,7 +178,7 @@
         <div class="label">Tanggal Transaksi</div>
         <div class="value">{{ $stockOut->transaction_date ? \Illuminate\Support\Carbon::parse($stockOut->transaction_date)->format('d/m/Y') : '-' }}</div>
         <div class="label">Total Jumlah</div>
-        <div class="value">{{ number_format($stockOut->quantity) }}</div>
+        <div class="value">{{ number_format($stockOut->items->sum('quantity')) }}</div>
     </div>
 
     <table>
