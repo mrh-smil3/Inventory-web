@@ -140,7 +140,6 @@ class StockInForm
                                                         ->send();
 
                                                     $set('quantity', $oldQuantity);
-                                                    $set('subtotal', $unitPrice * $oldQuantity);
                                                     return;
                                                 }
                                             }
@@ -156,10 +155,12 @@ class StockInForm
 
                                                 $set('product_id', $record->product_id);
                                                 $set('quantity', $record->quantity);
-                                                $set('subtotal', $unitPrice * $record->quantity);
                                                 return;
                                             }
                                         }
+
+                                        $unitPrice = (float) ($get('unit_price') ?? 0);
+                                        $set('subtotal', $unitPrice * (int) $state);
                                     })
                                     ->rules([
                                         fn (Get $get, $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
@@ -199,7 +200,6 @@ class StockInForm
                                     ->label('Subtotal')
                                     ->numeric()
                                     ->readOnly()
-                                    ->live()
                                     ->dehydrated(),
                             ])
                             ->columns(4)
