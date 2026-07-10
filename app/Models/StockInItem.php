@@ -9,7 +9,9 @@ class StockInItem extends Model
     protected $fillable = [
         'stock_in_id',
         'product_id',
+        'unit_price',
         'quantity',
+        'subtotal',
     ];
 
     public function stockIn()

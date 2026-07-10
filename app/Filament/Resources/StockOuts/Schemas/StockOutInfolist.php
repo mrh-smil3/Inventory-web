@@ -17,8 +17,6 @@ class StockOutInfolist
                     ->schema([
                         TextEntry::make('invoice_number')
                             ->label('No. Invoice'),
-                        // TextEntry::make('customer_name')
-                        //     ->label('Pelanggan'),
                         TextEntry::make('transaction_date')
                             ->label('Tanggal Transaksi'),
                         TextEntry::make('note')
@@ -29,12 +27,25 @@ class StockOutInfolist
                             ->schema([
                                 TextEntry::make('product.name')
                                     ->label('Nama Barang'),
+                                TextEntry::make('unit_price')
+                                    ->label('Harga Satuan')
+                                    ->numeric()
+                                    ->prefix('Rp'),
                                 TextEntry::make('quantity')
                                     ->label('Jumlah Keluar')
                                     ->numeric(),
+                                TextEntry::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->numeric()
+                                    ->prefix('Rp'),
                             ])
-                            ->columns(2)
+                            ->columns(4)
                             ->columnSpanFull(),
+                        TextEntry::make('total_price')
+                            ->label('Total Harga')
+                            ->numeric()
+                            ->prefix('Rp')
+                            ->weight('bold'),
                     ])->columns(2)
                     ->columnSpanFull(),
             ]);

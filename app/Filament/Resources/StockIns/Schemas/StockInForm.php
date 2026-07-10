@@ -27,24 +27,6 @@ class StockInForm
                             ->label('No. Invoice')
                             ->unique(ignoreRecord: true)
                             ->required(),
-                            // ->readOnly()
-                            // ->default(function () {
-                            //     $date = now()->format('Ymd');
-                            //     $prefix = "INV/IN/{$date}/";
-
-                            //     $latest = StockIn::where('invoice_number', 'like', "{$prefix}%")
-                            //         ->orderBy('id', 'desc')
-                            //         ->first();
-
-                            //     if ($latest) {
-                            //         $lastSeq = (int) substr($latest->invoice_number, -4);
-                            //         $nextSeq = str_pad($lastSeq + 1, 4, '0', STR_PAD_LEFT);
-                            //     } else {
-                            //         $nextSeq = '0001';
-                            //     }
-
-                            //     return $prefix.$nextSeq;
-                            // }),
 
                         Select::make('supplier_id')
                             ->label('Supplier')
@@ -88,7 +70,40 @@ class StockInForm
 
                                             $set('product_id', $record->product_id);
                                         }
+                                    })
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        $productId = $state;
+
+                                        if (! $productId) {
+                                            return;
+                                        }
+
+                                        $product = Product::find($productId);
+
+                                        if (! $product) {
+                                            return;
+                                        }
+
+                                        $unitPrice = (float) $product->purchase_price;
+                                        $quantity = (int) ($get('quantity') ?? 0);
+
+                                        $set('unit_price', $unitPrice);
+                                        $set('subtotal', $unitPrice * $quantity);
                                     }),
+
+                                TextInput::make('unit_price')
+                                    ->label('Harga Satuan')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        $unitPrice = (float) $state;
+                                        $quantity = (int) ($get('quantity') ?? 0);
+
+                                        $set('subtotal', $unitPrice * $quantity);
+                                    }),
+
                                 TextInput::make('quantity')
                                     ->label('Jumlah Masuk')
                                     ->numeric()
@@ -96,6 +111,9 @@ class StockInForm
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function (Get $get, Set $set, $state, $record) {
+                                        $unitPrice = (float) ($get('unit_price') ?? 0);
+                                        $set('subtotal', $unitPrice * (int) $state);
+
                                         if (! $record || ! $record->exists || ! $state) {
                                             return;
                                         }
@@ -122,6 +140,8 @@ class StockInForm
                                                         ->send();
 
                                                     $set('quantity', $oldQuantity);
+                                                    $set('subtotal', $unitPrice * $oldQuantity);
+                                                    return;
                                                 }
                                             }
                                         } else {
@@ -136,6 +156,8 @@ class StockInForm
 
                                                 $set('product_id', $record->product_id);
                                                 $set('quantity', $record->quantity);
+                                                $set('subtotal', $unitPrice * $record->quantity);
+                                                return;
                                             }
                                         }
                                     })
@@ -172,8 +194,15 @@ class StockInForm
                                             }
                                         },
                                     ]),
+
+                                TextInput::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->live()
+                                    ->dehydrated(),
                             ])
-                            ->columns(2)
+                            ->columns(4)
                             ->minItems(1)
                             ->addActionLabel('Tambah Barang')
                             ->columnSpanFull(),

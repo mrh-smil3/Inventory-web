@@ -9,7 +9,9 @@ class StockOutItem extends Model
     protected $fillable = [
         'stock_out_id',
         'product_id',
+        'unit_price',
         'quantity',
+        'subtotal',
     ];
 
     public function stockOut()

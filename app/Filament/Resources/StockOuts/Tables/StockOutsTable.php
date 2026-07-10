@@ -39,6 +39,11 @@ class StockOutsTable
                     ->label('Tanggal Transaksi')
                     ->date()
                     ->sortable(),
+                TextColumn::make('total_price')
+                    ->label('Total Harga')
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->sortable(),
                 TextColumn::make('note')
                     ->label('Catatan')
                     ->searchable()

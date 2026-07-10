@@ -47,6 +47,7 @@ class CreateStockOut extends CreateRecord
 
         $data['product_id'] = $items->first()['product_id'] ?? null;
         $data['quantity'] = $items->sum(fn (array $item): int => (int) ($item['quantity'] ?? 0));
+        $data['total_price'] = $items->sum(fn (array $item): float => (float) ($item['subtotal'] ?? 0));
 
         foreach ($items as $item) {
             $productId = $item['product_id'] ?? null;
@@ -74,5 +75,11 @@ class CreateStockOut extends CreateRecord
         }
 
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $totalPrice = $this->record->items()->sum('subtotal');
+        $this->record->update(['total_price' => $totalPrice]);
     }
 }

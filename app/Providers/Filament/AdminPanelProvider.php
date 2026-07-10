@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Actions\Action;
 use App\Filament\Pages\Settings;
+use Illuminate\Support\HtmlString; 
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,6 +28,20 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            // Logo Brand
+            ->brandLogo(asset('logo.png'))
+            ->brandName(config('app.name'))
+            ->favicon(asset('logo.png'))
+            ->brandLogoHeight('4rem')
+
+            // ->brandLogo(new \Illuminate\Support\HtmlString(
+            //     '<div style="display:flex;align-items:center;gap:10px">' .
+            //     '<img src="' . asset('logo.png') . '" style="height:4rem" alt="Logo">' .
+            //     '<span style="font-weight:700;font-size:1.1rem;color:#111827">' . config('app.name') . '</span>' .
+            //     '</div>'
+            // ))
+            // ->brandLogoHeight('4rem')
+
             ->id('admin')
             ->path('admin')
             ->login()

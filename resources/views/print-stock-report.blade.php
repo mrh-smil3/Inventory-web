@@ -13,6 +13,19 @@
             padding: 30px;
             background-color: #fff;
         }
+
+        .watermark-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.2; /* Atur transparansi di sini (0.0 - 1.0) */
+        z-index: 10;
+        pointer-events: none; /* Agar watermark tidak bisa diklik/di-select */
+        }
+        .watermark-logo img {
+            width: 300px; /* Sesuaikan ukuran logo */
+        }
         
         .header {
             margin-bottom: 30px;
@@ -21,6 +34,18 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left .logo img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
         }
         
         .company-details h1 {
@@ -149,6 +174,32 @@
             background-color: #f8fafc;
             border-color: #94a3b8;
         }
+
+        .signature-section {
+            margin-top: 50px;
+            display: flex;
+            justify-content: right;
+            gap: 40px;
+        }
+
+        .signature-block {
+            width: 200px;
+            text-align: center;
+        }
+
+        .signature-block .signature-line {
+            border-top: 1px solid #1f2937;
+            margin-top: 80px;
+            padding-top: 8px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .signature-block .signature-name {
+            font-size: 12px;
+            color: #475569;
+            margin-top: 4px;
+        }
         
         @media print {
             body {
@@ -170,10 +221,22 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            .watermark-logo {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0.15;
+                z-index: 10;
+                pointer-events: none;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="watermark-logo">
+        <img src="{{ asset('logo.png') }}" alt="Watermark Logo">
+    </div>
 
     <div class="toolbar no-print">
         <div>
@@ -187,8 +250,13 @@
 
     <div class="header">
         <div class="company-details">
-            <h1>Sistem Inventory Web</h1>
-            <p>Laporan Stok Terkini dan Akurat</p>
+            <div class="header-left">
+                <div class="logo">
+                    <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}">
+                </div>
+                <h1>{{ config('app.name') }}</h1>
+            </div>
+            <p class="muted" style="margin-top: 6px;">DS. Karanganyar RT.07/RW.01</p>
         </div>
         <div class="report-title">
             <h2>LAPORAN STOK BARANG</h2>
@@ -228,6 +296,17 @@
             @endforelse
         </tbody>
     </table>
+
+    <div class="signature-section">
+        <!-- <div class="signature-block">
+            <div class="signature-line">Mengetahui,</div>
+            <div class="signature-name">{{ config('app.name') }}</div>
+        </div> -->
+        <div class="signature-block">
+            <div class="signature-line">Dikeluarkan Oleh,</div>
+            <div class="signature-name">{{ config('app.name') }}</div>
+        </div>
+    </div>
 
     <div class="footer">
         <div>Dicetak oleh sistem secara otomatis.</div>

@@ -14,6 +14,19 @@
             font-size: 13px;
         }
 
+        .watermark-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.2; /* Atur transparansi di sini (0.0 - 1.0) */
+        z-index: 10;
+        pointer-events: none; /* Agar watermark tidak bisa diklik/di-select */
+        }
+        .watermark-logo img {
+            width: 300px; /* Sesuaikan ukuran logo */
+        }
+
         .toolbar {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -50,6 +63,18 @@
             border-bottom: 3px double #d1d5db;
             padding-bottom: 18px;
             margin-bottom: 24px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left .logo img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
         }
 
         h1, h2, p {
@@ -135,6 +160,32 @@
             font-size: 11px;
         }
 
+        .signature-section {
+            margin-top: 50px;
+            display: flex;
+            justify-content: right;
+            gap: 40px;
+        }
+
+        .signature-block {
+            width: 200px;
+            text-align: center;
+        }
+
+        .signature-block .signature-line {
+            border-top: 1px solid #1f2937;
+            margin-top: 80px;
+            padding-top: 8px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .signature-block .signature-name {
+            font-size: 12px;
+            color: #475569;
+            margin-top: 4px;
+        }
+
         @media print {
             body {
                 padding: 0;
@@ -149,10 +200,23 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+
+            .watermark-logo {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0.15;
+                z-index: 10;
+                pointer-events: none;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="watermark-logo">
+        <img src="{{ asset('logo.png') }}" alt="Watermark Logo">
+    </div>
     <div class="toolbar no-print">
         <strong>Pratinjau Cetak Barang Keluar</strong>
         <div style="display: flex; gap: 10px;">
@@ -163,8 +227,13 @@
 
     <div class="header">
         <div>
-            <h1>Sistem Inventory Web</h1>
-            <p class="muted">Dokumen transaksi barang keluar</p>
+            <div class="header-left">
+                <div class="logo">
+                    <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}">
+                </div>
+                <h1>{{ config('app.name') }}</h1>
+            </div>
+            <p class="muted" style="margin-top: 6px;">DS. Karanganyar RT.07/RW.01</p>
         </div>
         <div>
             <h2>BARANG KELUAR</h2>
@@ -179,17 +248,20 @@
         <div class="value">{{ $stockOut->transaction_date ? \Illuminate\Support\Carbon::parse($stockOut->transaction_date)->format('d/m/Y') : '-' }}</div>
         <div class="label">Total Jumlah</div>
         <div class="value">{{ number_format($stockOut->items->sum('quantity')) }}</div>
+        <div class="label">Total Harga</div>
+        <div class="value">Rp {{ number_format($stockOut->total_price ?? $stockOut->items->sum('subtotal'), 0, ',', '.') }}</div>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th style="width: 50px;">No</th>
-                <th style="width: 140px;">SKU</th>
+                <th style="width: 40px;">No</th>
+                <th style="width: 120px;">SKU</th>
                 <th>Nama Barang</th>
-                <th style="width: 120px;">Kategori</th>
                 <th style="width: 90px;">Satuan</th>
-                <th class="text-right" style="width: 120px;">Jumlah Keluar</th>
+                <th class="text-right" style="width: 90px;">Harga Satuan</th>
+                <th class="text-right" style="width: 70px;">Jumlah</th>
+                <th class="text-right" style="width: 120px;">Subtotal</th>
             </tr>
         </thead>
         <tbody>
@@ -198,18 +270,20 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->product?->sku ?? '-' }}</td>
                     <td>{{ $item->product?->name ?? '-' }}</td>
-                    <td>{{ $item->product?->category?->name ?? '-' }}</td>
                     <td>{{ $item->product?->unit?->name ?? '-' }}</td>
+                    <td class="text-right">Rp {{ number_format($item->unit_price ?? 0, 0, ',', '.') }}</td>
                     <td class="text-right">{{ number_format($item->quantity) }}</td>
+                    <td class="text-right">Rp {{ number_format($item->subtotal ?? 0, 0, ',', '.') }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; color: #94a3b8; padding: 28px;">Tidak ada item barang keluar.</td>
+                    <td colspan="7" style="text-align: center; color: #94a3b8; padding: 28px;">Tidak ada item barang keluar.</td>
                 </tr>
             @endforelse
             <tr class="total-row">
                 <td colspan="5" class="text-right">Total</td>
                 <td class="text-right">{{ number_format($stockOut->items->sum('quantity')) }}</td>
+                <td class="text-right">Rp {{ number_format($stockOut->total_price ?? $stockOut->items->sum('subtotal'), 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
@@ -220,6 +294,17 @@
             <p class="muted">{{ $stockOut->note }}</p>
         </div>
     @endif
+
+    <div class="signature-section">
+        <!-- <div class="signature-block">
+            <div class="signature-line">Mengetahui,</div>
+            <div class="signature-name">{{ config('app.name') }}</div>
+        </div> -->
+        <div class="signature-block">
+            <div class="signature-line">Dikeluarkan Oleh,</div>
+            <div class="signature-name">{{ config('app.name') }}</div>
+        </div>
+    </div>
 
     <div class="footer">
         <div>Dicetak oleh sistem secara otomatis.</div>

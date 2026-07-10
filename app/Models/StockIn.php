@@ -13,6 +13,7 @@ class StockIn extends Model
         'transaction_date',
         'note',
         'invoice_number',
+        'total_price',
     ];
 
     public function product()

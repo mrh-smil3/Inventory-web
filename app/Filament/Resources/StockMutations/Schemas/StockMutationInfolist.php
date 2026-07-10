@@ -32,11 +32,31 @@ class StockMutationInfolist
                         TextEntry::make('quantity')
                             ->label('Jumlah')
                             ->numeric(),
+                        TextEntry::make('unit_price')
+                            ->label('Harga Satuan')
+                            ->getStateUsing(fn ($record): ?float => match ($record->type) {
+                                'in' => $record->stockInItem?->unit_price,
+                                'out' => $record->stockOutItem?->unit_price,
+                                default => null,
+                            })
+                            ->numeric()
+                            ->prefix('Rp')
+                            ->placeholder('-'),
+                        TextEntry::make('subtotal')
+                            ->label('Subtotal')
+                            ->getStateUsing(fn ($record): ?float => match ($record->type) {
+                                'in' => $record->stockInItem?->subtotal,
+                                'out' => $record->stockOutItem?->subtotal,
+                                default => null,
+                            })
+                            ->numeric()
+                            ->prefix('Rp')
+                            ->placeholder('-'),
                         TextEntry::make('transaction_date')
                             ->label('Tanggal Transaksi')
                             ->date(),
-                        TextEntry::make('reference_id')
-                            ->label('Reference ID (Sistem)'),
+                        // TextEntry::make('reference_id')
+                        //     ->label('Reference ID (Sistem)'),
                         TextEntry::make('note')
                             ->label('Catatan')
                             ->columnSpanFull(),

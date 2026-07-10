@@ -34,6 +34,26 @@ class StockMutationsTable
                     ->label('Jumlah')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('unit_price')
+                    ->label('Harga Satuan')
+                    ->getStateUsing(fn ($record): ?float => match ($record->type) {
+                        'in' => $record->stockInItem?->unit_price,
+                        'out' => $record->stockOutItem?->unit_price,
+                        default => null,
+                    })
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->placeholder('-'),
+                TextColumn::make('subtotal')
+                    ->label('Subtotal')
+                    ->getStateUsing(fn ($record): ?float => match ($record->type) {
+                        'in' => $record->stockInItem?->subtotal,
+                        'out' => $record->stockOutItem?->subtotal,
+                        default => null,
+                    })
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->placeholder('-'),
                 TextColumn::make('transaction_date')
                     ->label('Tanggal Transaksi')
                     ->date()
@@ -49,6 +69,7 @@ class StockMutationsTable
             ->recordActions([
                 ViewAction::make(),
             ])
-            ->toolbarActions([]);
+            ->toolbarActions([])
+            ->defaultSort('transaction_date', 'desc');
     }
 }

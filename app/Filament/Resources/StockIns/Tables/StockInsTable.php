@@ -37,6 +37,11 @@ class StockInsTable
                     ->limitList(3)
                     ->expandableLimitedList()
                     ->searchable(),
+                TextColumn::make('total_price')
+                    ->label('Total Harga')
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->sortable(),
                 TextColumn::make('supplier.name')
                     ->label('Supplier')
                     ->searchable()
@@ -61,6 +66,7 @@ class StockInsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('transaction_date', 'desc');
     }
 }

@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class StockOutForm
@@ -49,9 +50,7 @@ class StockOutForm
                             ->label('Tanggal Transaksi')
                             ->date()
                             ->required(),
-                        // TextInput::make('customer_name')
-                        //     ->label('Pelanggan')
-                        //     ->required(),
+
                         Textarea::make('note')
                             ->label('Catatan'),
 
@@ -67,8 +66,8 @@ class StockOutForm
                                     ->required()
                                     ->live()
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                    ->afterStateUpdated(function (Get $get) {
-                                        $productId = $get('product_id');
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        $productId = $state;
 
                                         if (! $productId) {
                                             return;
@@ -76,21 +75,45 @@ class StockOutForm
 
                                         $product = Product::find($productId);
 
-                                        if ($product && $product->stock <= 0) {
+                                        if (! $product) {
+                                            return;
+                                        }
+
+                                        if ($product->stock <= 0) {
                                             Notification::make()
                                                 ->title('Peringatan: Stok Habis')
                                                 ->body("Stok untuk produk {$product->name} saat ini kosong.")
                                                 ->warning()
                                                 ->send();
                                         }
+
+                                        $unitPrice = (float) $product->selling_price;
+                                        $quantity = (int) ($get('quantity') ?? 0);
+
+                                        $set('unit_price', $unitPrice);
+                                        $set('subtotal', $unitPrice * $quantity);
                                     }),
+
+                                TextInput::make('unit_price')
+                                    ->label('Harga Satuan')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        $unitPrice = (float) $state;
+                                        $quantity = (int) ($get('quantity') ?? 0);
+
+                                        $set('subtotal', $unitPrice * $quantity);
+                                    }),
+
                                 TextInput::make('quantity')
                                     ->label('Jumlah Keluar')
                                     ->numeric()
                                     ->minValue(1)
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(function (Get $get, $state, $record) {
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state, $record) {
                                         $productId = $get('product_id');
 
                                         if (! $productId || ! $state) {
@@ -116,6 +139,9 @@ class StockOutForm
                                                 ->danger()
                                                 ->send();
                                         }
+
+                                        $unitPrice = (float) ($get('unit_price') ?? 0);
+                                        $set('subtotal', $unitPrice * (int) $state);
                                     })
                                     ->rules([
                                         fn (Get $get, $record): Closure => function (string $attribute, $value, Closure $fail) use ($get, $record): void {
@@ -142,8 +168,14 @@ class StockOutForm
                                             }
                                         },
                                     ]),
+
+                                TextInput::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->dehydrated(),
                             ])
-                            ->columns(2)
+                            ->columns(4)
                             ->minItems(1)
                             ->addActionLabel('Tambah Barang')
                             ->columnSpanFull(),
