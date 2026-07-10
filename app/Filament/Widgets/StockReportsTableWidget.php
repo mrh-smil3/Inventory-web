@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Exports\StockReportExport;
 use App\Models\Product;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -10,10 +11,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-
-use Barryvdh\DomPDF\Facade\Pdf;
-use Symfony\Component\HttpFoundation\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StockReportsTableWidget extends TableWidget
 {
@@ -64,12 +62,12 @@ class StockReportsTableWidget extends TableWidget
                 Action::make('exportPdf')
                     ->label('Export PDF')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->url(fn() => route('admin.stock-reports.print'))
+                    ->url(fn () => route('admin.stock-reports.print'))
                     ->openUrlInNewTab(),
-                Action::make('exportCsv')
-                    ->label('Export CSV')
+                Action::make('exportXlsx')
+                    ->label('Export XLSX')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->action(fn () => $this->exportCsv()),
+                    ->action(fn () => $this->exportXlsx()),
             ]);
     }
 
@@ -96,72 +94,12 @@ class StockReportsTableWidget extends TableWidget
             ->with(['category:id,name', 'unit:id,name']);
     }
 
-    public function exportCsv(): StreamedResponse
+    public function exportXlsx()
     {
-        $query = $this->getFilteredTableQuery() ?? $this->getTableQuery();
+        $filename = 'laporan_stok_' . now()->format('Ymd_His') . '.xlsx';
 
-        $response = new StreamedResponse(function () use ($query) {
-            $handle = fopen('php://output', 'w');
-
-            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
-
-            fputcsv($handle, [
-                'SKU',
-                'Nama Produk',
-                'Kategori',
-                'Satuan',
-                'Stok Masuk',
-                'Stok Keluar',
-                'Sisa Stok',
-            ]);
-
-            (clone $query)
-                ->with(['category:id,name', 'unit:id,name'])
-                ->chunk(500, function ($records) use ($handle) {
-                    foreach ($records as $product) {
-                        fputcsv($handle, [
-                            $product->sku,
-                            $product->name,
-                            $product->category?->name ?? '-',
-                            $product->unit?->name ?? '-',
-                            $product->total_stock_in ?? 0,
-                            $product->total_stock_out ?? 0,
-                            $product->stock,
-                        ]);
-                    }
-                });
-
-            fclose($handle);
-        });
-
-        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="laporan_stok_' . now()->format('Ymd_His') . '.csv"');
-
-        return $response;
+        return Excel::download(new StockReportExport, $filename);
     }
-
-   
-    // public function exportPdf(): Response
-    //     {
-    //         $query = $this->getFilteredTableQuery() ?? $this->getTableQuery();
-
-    //         $products = (clone $query)
-    //             ->with(['category:id,name', 'unit:id,name'])
-    //             ->get();
-
-    //         $pdf = Pdf::loadView('print-stock-report-pdf', [
-    //             'products' => $products,
-    //             'generatedAt' => now(),
-    //         ]);
-
-    //         $pdf->setPaper('a4', 'landscape');
-
-    //         // return response()->streamDownload(
-    //         //     fn () => print($pdf->output()),
-    //         //     'laporan_stok_' . now()->format('Ymd_His') . '.pdf'
-    //         // );
-    //         return $pdf->stream('laporan_stok.pdf');
-    //     }
 
     public function previewPdf()
     {
@@ -175,5 +113,4 @@ class StockReportsTableWidget extends TableWidget
             'products' => $products,
         ]);
     }
-    
 }
