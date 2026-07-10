@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stock_outs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->string('customer_name')->nullable();
+            // $table->string('customer_name')->nullable();
             $table->string('invoice_number')->unique();
             $table->integer('quantity');
             $table->date('transaction_date');
