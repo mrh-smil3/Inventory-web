@@ -1,0 +1,103 @@
+{
+  "nodes": [
+    {
+      "id": "public_logo_logo",
+      "label": "Toko Berkah Jaya Logo",
+      "file_type": "image",
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "public_logo_toko_berkah_jaya",
+      "label": "Toko Berkah Jaya (business entity)",
+      "file_type": "concept",
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "public_logo_bj_monogram",
+      "label": "BJ Monogram Emblem",
+      "file_type": "concept",
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "public_logo_ds_karanganyar_address",
+      "label": "Ds. Karanganyar RT. 07/01 (store address)",
+      "file_type": "concept",
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "public_logo_logo",
+      "target": "public_logo_toko_berkah_jaya",
+      "relation": "depicts",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "public_logo_logo",
+      "target": "public_logo_bj_monogram",
+      "relation": "depicts",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "public_logo_logo",
+      "target": "public_logo_ds_karanganyar_address",
+      "relation": "depicts",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "public_logo_bj_monogram",
+      "target": "public_logo_toko_berkah_jaya",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "public_logo_logo",
+      "target": "public_logo_toko_berkah_jaya",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png",
+      "source_location": null,
+      "weight": 0.8
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

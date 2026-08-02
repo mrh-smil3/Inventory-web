@@ -18,6 +18,10 @@ class StockOutItemObserver
                 throw new Exception('Stok tidak mencukupi untuk melakukan transaksi barang keluar.');
             }
 
+            if (($product->stock - $stockOutItem->quantity) < $product->min_stock) {
+                throw new Exception("Transaksi ini akan membuat stok {$product->name} berada di bawah limit stok minimum ({$product->min_stock}).");
+            }
+
             $product->decrement('stock', $stockOutItem->quantity);
         }
 
@@ -48,6 +52,10 @@ class StockOutItemObserver
                     throw new Exception('Stok tidak mencukupi untuk melakukan perubahan transaksi barang keluar.');
                 }
 
+                if ($diff > 0 && ($product->stock - $diff) < $product->min_stock) {
+                    throw new Exception("Perubahan ini akan membuat stok {$product->name} berada di bawah limit stok minimum ({$product->min_stock}).");
+                }
+
                 if ($diff > 0) {
                     $product->decrement('stock', $diff);
                 } elseif ($diff < 0) {
@@ -61,6 +69,10 @@ class StockOutItemObserver
             if ($newProduct) {
                 if ($newProduct->stock < $newQuantity) {
                     throw new Exception('Stok tidak mencukupi pada produk baru untuk transaksi barang keluar.');
+                }
+
+                if (($newProduct->stock - $newQuantity) < $newProduct->min_stock) {
+                    throw new Exception("Transaksi ini akan membuat stok {$newProduct->name} berada di bawah limit stok minimum ({$newProduct->min_stock}).");
                 }
 
                 $oldProduct?->increment('stock', $oldQuantity);

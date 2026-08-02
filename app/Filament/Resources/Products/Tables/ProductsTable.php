@@ -35,6 +35,12 @@ class ProductsTable
                 TextColumn::make('stock')
                     ->label('Stok')
                     ->numeric()
+                    ->sortable()
+                    ->color(fn ($record) => $record->stock <= $record->min_stock ? 'danger' : null)
+                    ->weight(fn ($record) => $record->stock <= $record->min_stock ? 'bold' : null),
+                TextColumn::make('min_stock')
+                    ->label('Limit Stok')
+                    ->numeric()
                     ->sortable(),
                 TextColumn::make('unit.name')
                     ->label('Satuan')

@@ -245,7 +245,7 @@
         <div class="label">No. Invoice</div>
         <div class="value">{{ $stockOut->invoice_number }}</div>
         <div class="label">Tanggal Transaksi</div>
-        <div class="value">{{ $stockOut->transaction_date ? \Illuminate\Support\Carbon::parse($stockOut->transaction_date)->format('d/m/Y') : '-' }}</div>
+        <div class="value">{{ $stockOut->transaction_date ? \Illuminate\Support\Carbon::parse($stockOut->transaction_date)->format('d/m/Y H:i') : '-' }}</div>
         <div class="label">Total Jumlah</div>
         <div class="value">{{ number_format($stockOut->items->sum('quantity')) }}</div>
         <div class="label">Total Harga</div>

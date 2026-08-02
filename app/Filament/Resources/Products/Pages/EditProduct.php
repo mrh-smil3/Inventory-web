@@ -13,6 +13,14 @@ class EditProduct extends EditRecord
     protected static string $resource = ProductResource::class;
     protected static ?string $title = 'Edit Produk';
 
+    public function hasFormWrapper(): bool
+    {
+        // See CreateProduct::hasFormWrapper() — without this, the browser's native
+        // `required` constraint validation blocks submission before the Indonesian
+        // ->validationMessages() on ProductForm's fields ever get a chance to render.
+        return false;
+    }
+
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()

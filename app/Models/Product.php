@@ -12,6 +12,7 @@ class Product extends Model
         'purchase_price',
         'selling_price',
         'stock',
+        'min_stock',
         'unit_id',
         'category_id',
         

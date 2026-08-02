@@ -49,7 +49,7 @@ class RecentStockMutationsTable extends TableWidget
                     ->numeric(),
                 TextColumn::make('transaction_date')
                     ->label('Tanggal')
-                    ->date('d M Y'),
+                    ->dateTime('d M Y H:i'),
                 TextColumn::make('note')
                     ->label('Catatan')
                     ->limit(40)

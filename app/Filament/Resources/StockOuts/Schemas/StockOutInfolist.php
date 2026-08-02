@@ -18,10 +18,22 @@ class StockOutInfolist
                         TextEntry::make('invoice_number')
                             ->label('No. Invoice'),
                         TextEntry::make('transaction_date')
-                            ->label('Tanggal Transaksi'),
+                            ->label('Tanggal Transaksi')
+                            ->dateTime(),
                         TextEntry::make('note')
                             ->label('Catatan')
                             ->columnSpanFull(),
+                        TextEntry::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->formatStateUsing(fn (string $state): string => match ($state) {
+                                'cancelled' => 'Dibatalkan',
+                                default => 'Selesai',
+                            })
+                            ->color(fn (string $state): string => match ($state) {
+                                'cancelled' => 'danger',
+                                default => 'success',
+                            }),
                         RepeatableEntry::make('items')
                             ->label('Daftar Barang')
                             ->schema([

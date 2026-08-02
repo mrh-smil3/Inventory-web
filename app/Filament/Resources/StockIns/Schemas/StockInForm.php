@@ -4,7 +4,7 @@ namespace App\Filament\Resources\StockIns\Schemas;
 
 use App\Models\Product;
 use App\Models\StockIn;
-use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -26,17 +26,27 @@ class StockInForm
                         TextInput::make('invoice_number')
                             ->label('No. Invoice')
                             ->unique(ignoreRecord: true)
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'No. Invoice wajib diisi.',
+                                'unique' => 'No. Invoice ini sudah digunakan, silakan gunakan nomor lain.',
+                            ]),
 
                         Select::make('supplier_id')
                             ->label('Supplier')
                             ->relationship('supplier', 'name')
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Supplier wajib dipilih.',
+                            ]),
 
-                        DatePicker::make('transaction_date')
+                        DateTimePicker::make('transaction_date')
                             ->label('Tanggal Transaksi')
-                            ->date()
-                            ->required(),
+                            ->default(now())
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Tanggal Transaksi wajib diisi.',
+                            ]),
 
                         Textarea::make('note')
                             ->label('Catatan')
@@ -54,6 +64,9 @@ class StockInForm
                                     ->required()
                                     ->live()
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->validationMessages([
+                                        'required' => 'Nama Barang wajib dipilih.',
+                                    ])
                                     ->afterStateUpdated(function (Set $set, $state, $record) {
                                         if (! $record || ! $record->exists || ! $state || $record->product_id == $state) {
                                             return;
@@ -97,6 +110,11 @@ class StockInForm
                                     ->minValue(0)
                                     ->required()
                                     ->live(onBlur: true)
+                                    ->validationMessages([
+                                        'required' => 'Harga Satuan wajib diisi.',
+                                        'numeric' => 'Harga Satuan harus berupa angka.',
+                                        'min' => 'Harga Satuan tidak boleh kurang dari :min.',
+                                    ])
                                     ->afterStateUpdated(function (Get $get, Set $set, $state) {
                                         $unitPrice = (float) $state;
                                         $quantity = (int) ($get('quantity') ?? 0);
@@ -110,6 +128,11 @@ class StockInForm
                                     ->minValue(1)
                                     ->required()
                                     ->live(onBlur: true)
+                                    ->validationMessages([
+                                        'required' => 'Jumlah Masuk wajib diisi.',
+                                        'numeric' => 'Jumlah Masuk harus berupa angka.',
+                                        'min' => 'Jumlah Masuk tidak boleh kurang dari :min.',
+                                    ])
                                     ->afterStateUpdated(function (Get $get, Set $set, $state, $record) {
                                         $unitPrice = (float) ($get('unit_price') ?? 0);
                                         $set('subtotal', $unitPrice * (int) $state);

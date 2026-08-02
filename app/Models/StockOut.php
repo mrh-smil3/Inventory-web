@@ -14,6 +14,7 @@ class StockOut extends Model
         'note',
         'invoice_number',
         'total_price',
+        'status',
     ];
 
     public function product()

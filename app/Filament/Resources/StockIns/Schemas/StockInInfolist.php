@@ -20,7 +20,8 @@ class StockInInfolist
                         TextEntry::make('supplier.name')
                             ->label('Supplier'),
                         TextEntry::make('transaction_date')
-                            ->label('Tanggal Transaksi'),
+                            ->label('Tanggal Transaksi')
+                            ->dateTime(),
                         TextEntry::make('note')
                             ->label('Catatan')
                             ->columnSpanFull(),

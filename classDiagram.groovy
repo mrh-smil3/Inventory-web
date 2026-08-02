@@ -37,6 +37,7 @@ classDiagram
         - string name
         - bigint unit_id
         - int stock
+        - int min_stock
         - decimal purchase_price
         - decimal selling_price
         - datetime created_at
@@ -62,7 +63,7 @@ classDiagram
         - bigint supplier_id
         - string invoice_number
         - decimal total_price
-        - date transaction_date
+        - datetime transaction_date
         - text note
         - datetime created_at
         - datetime updated_at
@@ -87,8 +88,9 @@ classDiagram
         - bigint id
         - string invoice_number
         - decimal total_price
-        - date transaction_date
+        - datetime transaction_date
         - text note
+        - enum status
         - datetime created_at
         - datetime updated_at
         + createInvoice()
@@ -114,7 +116,7 @@ classDiagram
         - enum type
         - int qty
         - bigint reference_id
-        - date transaction_date
+        - datetime transaction_date
         - text note
         - datetime created_at
         - datetime updated_at

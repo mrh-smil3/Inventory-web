@@ -31,16 +31,16 @@ class StockMovementChart extends ChartWidget
         $incoming = StockMutation::query()
             ->where('type', 'in')
             ->where('transaction_date', '>=', $startDate)
-            ->select('transaction_date', DB::raw('SUM(quantity) as total'))
-            ->groupBy('transaction_date')
-            ->pluck('total', 'transaction_date');
+            ->select(DB::raw('DATE(transaction_date) as day'), DB::raw('SUM(quantity) as total'))
+            ->groupBy('day')
+            ->pluck('total', 'day');
 
         $outgoing = StockMutation::query()
             ->where('type', 'out')
             ->where('transaction_date', '>=', $startDate)
-            ->select('transaction_date', DB::raw('SUM(quantity) as total'))
-            ->groupBy('transaction_date')
-            ->pluck('total', 'transaction_date');
+            ->select(DB::raw('DATE(transaction_date) as day'), DB::raw('SUM(quantity) as total'))
+            ->groupBy('day')
+            ->pluck('total', 'day');
 
         $incomingData = collect($dateKeys)
             ->map(fn (string $date) => (int) ($incoming[$date] ?? 0))

@@ -1,0 +1,7 @@
+/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/CLAUDE.md
+/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/README.md
+/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/docs/DOKUMENTASI_SISTEM_INVENTORY.md
+/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/docs/DOKUMENTASI_TEKNIS_CONFIG.md
+/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/docs/filament-shield.md
+/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/robots.txt
+/Volumes/MeDrive/Wirausaha/Nexgen Business/Project/Inventory-web/public/logo.png

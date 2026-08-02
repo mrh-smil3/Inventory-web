@@ -54,7 +54,7 @@ class StockMutationInfolist
                             ->placeholder('-'),
                         TextEntry::make('transaction_date')
                             ->label('Tanggal Transaksi')
-                            ->date(),
+                            ->dateTime(),
                         // TextEntry::make('reference_id')
                         //     ->label('Reference ID (Sistem)'),
                         TextEntry::make('note')

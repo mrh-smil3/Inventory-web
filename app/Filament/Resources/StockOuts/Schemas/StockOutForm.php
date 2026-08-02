@@ -5,7 +5,7 @@ namespace App\Filament\Resources\StockOuts\Schemas;
 use App\Models\Product;
 use App\Models\StockOut;
 use Closure;
-use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -46,9 +46,9 @@ class StockOutForm
                                 return $prefix.$nextSeq;
                             }),
 
-                        DatePicker::make('transaction_date')
+                        DateTimePicker::make('transaction_date')
                             ->label('Tanggal Transaksi')
-                            ->date()
+                            ->default(now())
                             ->required(),
 
                         Textarea::make('note')
@@ -83,6 +83,12 @@ class StockOutForm
                                             Notification::make()
                                                 ->title('Peringatan: Stok Habis')
                                                 ->body("Stok untuk produk {$product->name} saat ini kosong.")
+                                                ->warning()
+                                                ->send();
+                                        } elseif ($product->stock <= $product->min_stock) {
+                                            Notification::make()
+                                                ->title('Peringatan: Stok Menipis')
+                                                ->body("Stok untuk produk {$product->name} sudah berada pada atau di bawah limit stok minimum ({$product->min_stock}).")
                                                 ->warning()
                                                 ->send();
                                         }
@@ -138,6 +144,12 @@ class StockOutForm
                                                 ->body("Stok tersedia untuk {$product->name}: {$availableStock}. Jumlah keluar yang diminta: {$state}.")
                                                 ->danger()
                                                 ->send();
+                                        } elseif (($availableStock - $state) < $product->min_stock) {
+                                            Notification::make()
+                                                ->title('Melebihi Limit Stok Minimum')
+                                                ->body("Jumlah keluar ini akan membuat stok {$product->name} menjadi ".($availableStock - $state).", di bawah limit stok minimum ({$product->min_stock}).")
+                                                ->danger()
+                                                ->send();
                                         }
 
                                         $unitPrice = (float) ($get('unit_price') ?? 0);
@@ -165,9 +177,50 @@ class StockOutForm
 
                                             if ($value > $availableStock) {
                                                 $fail("Jumlah keluar ({$value}) melebihi stok yang tersedia ({$availableStock}).");
+
+                                                return;
+                                            }
+
+                                            if (($availableStock - $value) < $product->min_stock) {
+                                                $fail("Jumlah keluar ({$value}) melebihi limit stok minimum untuk {$product->name}. Sisa stok tidak boleh kurang dari {$product->min_stock}.");
                                             }
                                         },
-                                    ]),
+                                    ])
+                                    // Same threshold check as the rule above, surfaced as an inline
+                                    // hint under the field itself (not just a toast notification),
+                                    // so the limit is visible right where the user is typing.
+                                    ->hintColor('danger')
+                                    ->hint(function (Get $get, $record, $state): ?string {
+                                        $productId = $get('product_id');
+
+                                        if (! $productId || ! $state) {
+                                            return null;
+                                        }
+
+                                        $product = Product::find($productId);
+
+                                        if (! $product) {
+                                            return null;
+                                        }
+
+                                        $availableStock = $product->stock;
+
+                                        if ($record && $record->exists && $record->product_id == $productId) {
+                                            $availableStock += $record->quantity;
+                                        }
+
+                                        $quantity = (int) $state;
+
+                                        if ($quantity > $availableStock) {
+                                            return "Melebihi stok tersedia ({$availableStock}).";
+                                        }
+
+                                        if (($availableStock - $quantity) < $product->min_stock) {
+                                            return 'Sisa stok akan menjadi '.($availableStock - $quantity)." (di bawah limit minimum {$product->min_stock}).";
+                                        }
+
+                                        return null;
+                                    }),
 
                                 TextInput::make('subtotal')
                                     ->label('Subtotal')

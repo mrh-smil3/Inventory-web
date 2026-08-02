@@ -56,7 +56,7 @@ class StockMutationsTable
                     ->placeholder('-'),
                 TextColumn::make('transaction_date')
                     ->label('Tanggal Transaksi')
-                    ->date()
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('note')
                     ->label('Catatan')
