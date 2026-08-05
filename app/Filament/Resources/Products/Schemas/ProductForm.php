@@ -108,6 +108,7 @@ class ProductForm
                             ->minValue(0)
                             ->default(0)
                             ->required()
+                            ->disabled(fn (): bool => ! auth()->user()?->hasAnyRole(['admin', 'super_admin']))
                             ->validationMessages([
                                 'required' => 'Limit Stok Minimum wajib diisi.',
                                 'numeric' => 'Limit Stok Minimum harus berupa angka.',

@@ -4,10 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleSeeder extends Seeder
 {
@@ -15,22 +15,22 @@ class RoleSeeder extends Seeder
 
     public function run(): void
     {
-        Artisan::call('cache:forget spatie.permission.cache');
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $this->createPermissions();
         $this->createRoles();
         $this->assignUsersToRoles();
 
-        Artisan::call('cache:forget spatie.permission.cache');
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     protected function createPermissions(): void
     {
         $models = ['Product', 'Category', 'Supplier', 'StockIn', 'StockOut', 'StockMutation', 'User', 'Role'];
         $methods = [
-            'viewAny', 'view', 'create', 'update', 'delete',
-            'deleteAny', 'restore', 'forceDelete', 'forceDeleteAny',
-            'restoreAny', 'replicate', 'reorder',
+            'ViewAny', 'View', 'Create', 'Update', 'Delete',
+            'DeleteAny', 'Restore', 'ForceDelete', 'ForceDeleteAny',
+            'RestoreAny', 'Replicate', 'Reorder',
         ];
 
         foreach ($models as $model) {
@@ -39,7 +39,7 @@ class RoleSeeder extends Seeder
             }
         }
 
-        Permission::findOrCreate('view:Settings', $this->guard);
+        Permission::findOrCreate('View:Settings', $this->guard);
 
         $widgets = [
             'InventoryOverviewStats',
@@ -52,7 +52,7 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($widgets as $widget) {
-            Permission::findOrCreate("view:{$widget}", $this->guard);
+            Permission::findOrCreate("View:{$widget}", $this->guard);
         }
     }
 
@@ -69,20 +69,23 @@ class RoleSeeder extends Seeder
         $admin->syncPermissions($allPermissions);
 
         $kasirPermissions = Permission::whereIn('name', [
-            'viewAny:Product', 'view:Product',
-            'viewAny:Category', 'view:Category',
-            'viewAny:Supplier', 'view:Supplier',
-            'viewAny:StockIn', 'view:StockIn', 'create:StockIn',
-            'viewAny:StockOut', 'view:StockOut', 'create:StockOut',
-            'viewAny:StockMutation', 'view:StockMutation',
-            'view:Settings',
-            'view:InventoryOverviewStats',
-            'view:TransactionStats',
-            'view:StockMovementChart',
-            'view:StockByCategoryChart',
-            'view:TopOutboundProductsChart',
-            'view:LowStockProductsTable',
-            'view:RecentStockMutationsTable',
+            'ViewAny:Product', 'View:Product', 'Update:Product',
+            'ViewAny:Category', 'View:Category',
+            'ViewAny:Supplier', 'View:Supplier',
+            'ViewAny:StockIn', 'View:StockIn', 'Create:StockIn',
+            'ViewAny:StockOut', 'View:StockOut', 'Create:StockOut',
+            'ViewAny:StockMutation', 'View:StockMutation',
+            'View:Settings',
+            'View:Dashboard',
+            'View:StockReports',
+            'View:StockReportsTableWidget',
+            'View:InventoryOverviewStats',
+            'View:TransactionStats',
+            'View:StockMovementChart',
+            'View:StockByCategoryChart',
+            'View:TopOutboundProductsChart',
+            'View:LowStockProductsTable',
+            'View:RecentStockMutationsTable',
         ])->get();
 
         $kasir = Role::findOrCreate('kasir', $this->guard);
@@ -106,7 +109,7 @@ class RoleSeeder extends Seeder
         $adminUser->assignRole('admin');
 
         $kasirUser = User::firstOrCreate(
-            ['email' => 'kasir@inventory.web'],
+            ['email' => 'kasir@mail.com'],
             [
                 'name' => 'Staff Kasir',
                 'password' => Hash::make('kasir1234'),
