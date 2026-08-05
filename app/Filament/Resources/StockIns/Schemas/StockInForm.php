@@ -44,6 +44,7 @@ class StockInForm
                             ->label('Tanggal Transaksi')
                             ->default(now())
                             ->required()
+                            ->readOnly()
                             ->validationMessages([
                                 'required' => 'Tanggal Transaksi wajib diisi.',
                             ]),

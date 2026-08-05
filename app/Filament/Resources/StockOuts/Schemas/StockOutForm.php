@@ -49,6 +49,7 @@ class StockOutForm
                         DateTimePicker::make('transaction_date')
                             ->label('Tanggal Transaksi')
                             ->default(now())
+                            ->readOnly()
                             ->required(),
 
                         Textarea::make('note')
